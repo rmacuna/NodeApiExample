@@ -26,11 +26,16 @@
   "homepage": "https://github.com/rmacuna/HOTELES#readme",
   "dependencies": {
     "cross-env": "^5.2.0",
+    "dotenv": "^6.0.0",
     "express": "^4.16.3",
-    "mongoose": "^5.3.0"
+    "mongoose": "^5.3.0",
+    "morgan": "^1.9.1",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
     "nodemon": "^1.18.4"
   }
 }
