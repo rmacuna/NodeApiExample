@@ -8,3 +8,9 @@ Importante sino no va a correr la api.
 ```
 npm install 
 ```
+Luego correr el servidor 
+
+```
+npm run dev 
+```
+

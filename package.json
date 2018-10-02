@@ -4,7 +4,9 @@
   "description": "rest api para bases de datos 1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "cross-env NODE_ENV=development nodemon",
+    "start": "cross-env NODE_ENV=production  node index",
+    "test": "cross-env NODE_ENV=test echo \"Error: no test specified\"&& exit 1"
   },
   "repository": {
     "type": "git",

@@ -1,10 +1,11 @@
 
-/* Seccion de imports de librerias necesarias para la creación del proyecto */
-const http = require('http'); 
-const app = require('./server');
-const config = require('./server/config/');
+/* 
+	Seccion de imports de librerias necesarias para la creación del proyecto 
+*/
+	const http = require('http'); 
+	const app = require('./server');
+	const config = require('./server/config');
 /*
-
 	¿Qué se está haciendo aquí?
 
 	* Basicamente aqui lo que se pretende es traer lo que se importo del archivo config y guardarlo en una
@@ -26,13 +27,13 @@ const config = require('./server/config/');
 
 */
 
-const { hostname, port } = config.server
-const server = http.createServer(app);
+	const { hostname, port } = config.server
+	const server = http.createServer(app);
 
-// Funcion que le pasa el puerto y el hostname creado arriba  y que nos arroja una respuesta de que el servidor 
-// esta encendido
-
-
-server.listen(port, hostname, () => {
-	console.log('Server is running, the api is ready at  http://${hostname}:${port}/');
-});
+	server.listen(port, hostname, () => {
+  		console.log(`Server running at http://${hostname}:${port}/`);
+	});
+/*
+	Funcion que le pasa el puerto y el hostname creado arriba  y que nos arroja una respuesta 
+	de que el servidor esta encendido 
+*/
