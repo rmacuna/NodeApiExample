@@ -1,0 +1,33 @@
+{
+  "name": "hoteles_rest_api",
+  "version": "1.0.0",
+  "description": "rest api para bases de datos 1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmacuna/HOTELES.git"
+  },
+  "keywords": [
+    "rest",
+    "api",
+    "node",
+    "crud"
+  ],
+  "author": "Roberto Acuña, Jesus Padilla y Elkin Rodriguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rmacuna/HOTELES/issues"
+  },
+  "homepage": "https://github.com/rmacuna/HOTELES#readme",
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "express": "^4.16.3",
+    "mongoose": "^5.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}
