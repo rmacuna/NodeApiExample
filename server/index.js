@@ -15,7 +15,6 @@ app.use('/api/v1', api);
 
 // Handle middleware errors
 app.use((req, res, next) => {
-  logger.info('Route not found');
   res.status(404);
   res.json({
     error: 'Route not found',
@@ -23,11 +22,31 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  logger.error(`Error: ${err}`);
   res.status(500);
   res.json({
     error: `${err}`,
   });
 });
 
+app.use((err, req, res, next) => {
+  let {
+    statusCode = 500,
+  } = err;
+  const {
+    message,
+  } = err;
+
+  // Validation Errors
+  if (err.message.startsWith('ValidationError')) {
+    statusCode = 422;
+  }
+
+  logger.error(`Error: ${message}`);
+  res.status(statusCode);
+  res.json({
+    error: true,
+    statusCode,
+    message,
+  });
+});
 module.exports = app;

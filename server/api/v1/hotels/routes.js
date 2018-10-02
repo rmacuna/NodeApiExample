@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const logger = require('winston');
-
-
+const controller = require('./controller');
 /*
  * /api/hotels/     POST   - CREATE
  * /api/hotels/     GET    - READ ALL
@@ -11,12 +10,14 @@ const logger = require('winston');
  */
 
 router.route('/')
-    .get((req, res, next) => {})
-    .post((req, res, next) => {});
+    .post(controller.create)
+    .get(controller.all)
 
 router.route('/:id')
-    .get((req, res, next) => {})
-    .put((req, res, next) => {})
-    .delete((req, res, next) => {});
+    .get(controller.read)
+    .put(controller.update)
+    .delete(controller.delete);
+
 
 module.exports = router;
+
