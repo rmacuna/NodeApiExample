@@ -1,12 +1,7 @@
 const router = require('express').Router();
-const logger = require('winston');
+const hotels = require('./hotels/routes');
 
-router.route('/api/hotels')
- .get((req, res, next) => {
-    res.json({
-      message: 'GET all posts'
-    });
-});
+router.use('/hotels', hotels);
 
 
 module.exports = router;
