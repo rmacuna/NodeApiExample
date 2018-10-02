@@ -29,3 +29,17 @@ exports.connect = () => {
   	});
 
 }
+
+/*
+	- Importamos las librerías necesarias para hacer la conexión y dejar una constancia de los eventos, también cargamos
+	  nuestra configuración.
+	- Exportamos del módulo una función llamada connect que se encargará de realizar la conexión a la base de datos.
+	- Dentro de la función tomamos solo la configuración correspondiente a la base de datos.
+	- Invocamos la función de conexión a la base de datos
+	- Creamos unos listeners para escuchar los eventos de la conexión, en este caso cuando la conexión fue exitosa, cuando se 
+	  cerro la conexión o cuando hubo un error.
+	- El último fragmento de código es un evento del sistema de Node JS que indica cuando se cerró la aplicación, puede ser 
+	  debido a varias causas pero lo importante es que antes de cerrar la aplicación nos desconectamos de la base de datos 
+	  para liberar esa conexión pues ya no se utilizará mas.
+
+*/

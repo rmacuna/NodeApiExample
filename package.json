@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/rmacuna/HOTELES#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "cross-env": "^5.2.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
