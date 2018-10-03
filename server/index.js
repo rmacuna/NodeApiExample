@@ -12,8 +12,18 @@ app.use(morgan('common'));
 app.use('/api', api);
 app.use('/api/v1', api);
 
+// Conectarse a la base de datos de mongo
+const bodyParser = require('body-parser');
+const database = require('./database');
+
+// Connect to database
+database.connect();
+
+// Initialize Express app
 
 // Handle middleware errors
+
+
 app.use((req, res, next) => {
   res.status(404);
   res.json({

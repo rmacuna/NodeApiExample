@@ -1,5 +1,3 @@
-
-
 /*
 Extraemos el constructor del esquema (Schema) 
 del objeto mongoose.
@@ -15,43 +13,27 @@ const { Schema } = mongoose;
 
 /* Creamos el objeto */
 const fields = {
-	HOTEL_NAME: {
-		type: String,
-		required: true
-	},
-	ADDRESS: {
-		type: String,
-		required: true
-	},
-	STATE: {
-		type: String
-	},
-	PHONE: {
-		type: String,
-	},
-	FAX: {
-		type: String
-	},
-	EMAIL_ID: {
-		type: String
-	},
-	WEBSITE: {
-		type: String
-	},
-	TYPE: {
-		type: String
-	},
-	Rooms: {
-		type: String,
-		required: true
-	},
-	Size: {
-		type: String
-	}
+	_id: Schema.Types.ObjectId,
+	HOTEL_NAME: String,
+	ADDRESS: String,
+	STATE: String,
+	PHONE: String,
+	FAX: String,
+	EMAIL_ID: String,
+	WEBSITE: String,
+	TYPE: String,
+	Rooms: Number,
+	Size: String
 }
 
+
 const hotel = new Schema(fields, {
-	timestamps: true 
+	timestamps: false 
 })
 
-module.exports = mongoose.model('hotel', hotel);
+module.exports = mongoose.model('Hoteles1', hotel, 'Hoteles1');
+
+
+
+
+

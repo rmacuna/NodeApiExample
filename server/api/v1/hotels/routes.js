@@ -13,10 +13,14 @@ router.route('/')
     .post(controller.create)
     .get(controller.all)
 
-router.route('/:id')
+router.route('/find')
     .get(controller.read)
-    .put(controller.update)
-    .delete(controller.delete);
+
+router.route('/:id')
+   .put(controller.update)
+   .delete(controller.delete);
+ 
+
 
 
 module.exports = router;
