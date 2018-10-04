@@ -1,9 +1,11 @@
 /*
-Extraemos el constructor del esquema (Schema) 
+Extraemos el constructor del esquema (Schema)
 del objeto mongoose.
 
-Agregamos la opción timestamps al Schema para que
- automáticamente nos añada los atributos de createdAt y updatedAt, el primero se establece una vez se guarda satisfactoriamente el documento y el segundo una vez se actualice satisfactoriamente el documento.
+Agregamos la opción timestamps al Schema para que automáticamente nos añada los atributos de
+createdAt y updatedAt, el primero se establece una vez se guarda satisfactoriamente el documento y
+el segundo una vez se actualice satisfactoriamente el documento.
+
 */
 
 const mongoose = require('mongoose');
@@ -13,27 +15,24 @@ const { Schema } = mongoose;
 
 /* Creamos el objeto */
 const fields = {
-	_id: Schema.Types.ObjectId,
-	HOTEL_NAME: String,
-	ADDRESS: String,
-	STATE: String,
-	PHONE: String,
-	FAX: String,
-	EMAIL_ID: String,
-	WEBSITE: String,
-	TYPE: String,
-	Rooms: Number,
-	Size: String
-}
+  _id: { type: Schema.Types.ObjectId, auto: true },
+  HOTEL_NAME: String,
+  ADDRESS: String,
+  STATE: String,
+  PHONE: String,
+  FAX: String,
+  EMAIL_ID: String,
+  WEBSITE: String,
+  TYPE: String,
+  Rooms: Number,
+  Size: String,
+  Latitude: String,
+  Longitude: String,
+};
 
 
 const hotel = new Schema(fields, {
-	timestamps: false 
-})
+  timestamps: false,
+});
 
 module.exports = mongoose.model('Hoteles1', hotel, 'Hoteles1');
-
-
-
-
-

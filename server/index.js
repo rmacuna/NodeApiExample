@@ -4,16 +4,19 @@ const morgan = require('morgan');
 const api = require('./api/v1');
 
 const app = express();
+const bodyParser = require('body-parser');
 
 // Setup middleware
 app.use(morgan('common'));
+app.use(bodyParser.urlencoded({ extended: false }))
 
+// parse application/json
+app.use(bodyParser.json())
 // Setup router and routes
 app.use('/api', api);
 app.use('/api/v1', api);
 
 // Conectarse a la base de datos de mongo
-const bodyParser = require('body-parser');
 const database = require('./database');
 
 // Connect to database

@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/rmacuna/HOTELES#readme",
   "dependencies": {
+    "axios": "^0.16.2",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "cross-env": "^5.2.0",
     "dotenv": "^6.0.0",
