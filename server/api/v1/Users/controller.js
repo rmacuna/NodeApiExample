@@ -57,19 +57,7 @@ exports.read = (req, res, next) => {
 exports.update = (req, res, next) => {
     const { body } = req;
     const userid = req.params.id;
-    // function isAllFieldsFilled(body) {
-    //     const flag = true;
-    //     for (field in body) {
-    //         if (body.hasOwnProperty(field)) {
-    //             if (body[field] === null && body[field] === typeof undefined || body[field].toString().trim().lenght === 0) {
-    //                 flag = false;
-    //             }
-    //         } else {
-    //             flag = false;
-    //         }
-    //     }
-    //     return flag;
-    // }
+
 
     function deleteIfEmpty(dataToSearch) {
         for (key in dataToSearch) {
@@ -77,6 +65,21 @@ exports.update = (req, res, next) => {
                 delete dataToSearch[key];
             }
         }
+        return dataToSearch;
+    }
+
+    function validatePass(password) {
+        if (password !== undefined && password !== null) {
+            const trimmed = password.trim().length;
+            if (trimmed > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false; 
+        }
+
     }
     /* 
         Una vez verificamos si los parametros enviados fueron llenados verificamos cuales 
@@ -84,22 +87,30 @@ exports.update = (req, res, next) => {
     */
     const user = new Model();
     let fieldsToUpdate = {};
-    fieldsToUpdate.email = body.email;
-    fieldsToUpdate.password = user.generateHash(body.password);
-    fieldsToUpdate.address = body.address;
-    fieldsToUpdate.name = body.name;
-    fieldsToUpdate.lastname = body.lastname;
-    fieldsToUpdate.userId = body.userId;
-    deleteIfEmpty(fieldsToUpdate);
-    Model.update({ userId: userid }, fieldsToUpdate)
-        .then((data) => {
-            res.json({ message: 'User Updated' });
-        })
-        .catch((err) => {
-            next(new Error(err));
-        })
-
-
+    if (Object.keys(body).length > 0) {
+        fieldsToUpdate.email = body.email;
+        if (validatePass(body.password)) {
+            fieldsToUpdate.password = user.generateHash(body.password);
+        }
+        fieldsToUpdate.address = body.address;
+        fieldsToUpdate.name = body.name;
+        fieldsToUpdate.lastname = body.lastname;
+        fieldsToUpdate.userId = body.userId;
+        deleteIfEmpty(fieldsToUpdate);
+        Model.updateOne({ userId: userid }, fieldsToUpdate)
+            .then((data) => {
+                if (data.n === 0) {
+                    res.json({ message: 'User Not Found', responseType: '0' });
+                } else {
+                    res.json({ message: 'User Updated', responseType: '1' });
+                }
+            })
+            .catch((err) => {
+                res.json({ error: err, responseType: '0' });
+            })
+    } else {
+        res.json({ error: 'Fields are empty', responseType: '0' });
+    }
 };
 
 exports.delete = (req, res, next) => {

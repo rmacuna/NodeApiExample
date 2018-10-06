@@ -4,13 +4,12 @@ const bcrypt = require('bcrypt-nodejs');
 const { Schema } = mongoose;
 
 
-
 const fields = {
   email: {
   	type: String,
   	required: true,
   	unique: true,
-  	dropDups: true
+  	dropDups: true,
   },
   password: {
   	type: String,
@@ -30,8 +29,12 @@ const fields = {
   },
   userId: {
   	type: String,
-  	unique: true
-  }
+  	unique: true,
+    dropDups: true,
+  },
+  roomsReserved: {
+    type: Object 
+  },
 };
 
 
