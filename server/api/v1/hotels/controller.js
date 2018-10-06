@@ -63,6 +63,8 @@ exports.read = (req, res, next) => {
     dataToSearch.TYPE = params.TYPE;
     dataToSearch.Rooms = params.Rooms;
     dataToSearch.Size = params.Size;
+    dataToSearch.Latitude  = params.Latitude;
+    dataToSearch.Longitude = params.Longitude;
     for (key in dataToSearch) {
         if (dataToSearch[key] === null || dataToSearch[key] === undefined || dataToSearch[key] === '') {
             delete dataToSearch[key];

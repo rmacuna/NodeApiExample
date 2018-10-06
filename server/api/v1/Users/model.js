@@ -6,12 +6,32 @@ const { Schema } = mongoose;
 
 
 const fields = {
-  email: String,
-  password: String,
-  name: String,
-  lastname: String,
-  address: String,
-  userId: String,
+  email: {
+  	type: String,
+  	required: true,
+  	unique: true,
+  	dropDups: true
+  },
+  password: {
+  	type: String,
+  	required: true
+  },
+  name: {
+  	type: String,
+  	required: true
+  },
+  lastname: {
+  	type: String,
+  	required: true
+  },
+  address: {
+  	type: String,
+  	required: true
+  },
+  userId: {
+  	type: String,
+  	unique: true
+  }
 };
 
 

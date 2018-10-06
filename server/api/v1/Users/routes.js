@@ -14,10 +14,12 @@ router.route('/')
     .get(controller.all)
 
 router.route('/find')
-    .get(controller.read)
+    .get(controller.read);
+
+router.route('/update/:id')
+	.put(controller.update);
 
 router.route('/:id')
-   .put(controller.update)
    .delete(controller.delete);
 
 

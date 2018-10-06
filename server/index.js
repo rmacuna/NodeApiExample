@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const api = require('./api/v1');
 
 const app = express();
+const bcrypt = require('bcrypt-nodejs');
 const bodyParser = require('body-parser');
 
 // Setup middleware
