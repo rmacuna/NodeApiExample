@@ -9,7 +9,7 @@ Importante sino no va a correr la api.
 npm install 
 ```
 
-Crear un archivo con el nombre .env donde se colocara 
+Crear un archivo con el nombre .env en la raiz del proyecto  donde se colocara 
 
 ``` 
 	
