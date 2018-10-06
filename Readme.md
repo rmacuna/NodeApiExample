@@ -8,6 +8,17 @@ Importante sino no va a correr la api.
 ```
 npm install 
 ```
+
+Crear un archivo con el nombre .env donde se colocara 
+
+``` 
+	
+	SERVER_HOSTNAME=localhost
+	SERVER_PORT=3000
+	DB_REF=mongodb://localhost/Hotel_Tourism
+
+```
+
 Luego correr el servidor 
 
 ```
