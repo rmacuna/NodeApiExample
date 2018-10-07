@@ -1,9 +1,11 @@
 const https = require('https');
 const Model = require('./model');
+// const {
+//     auth
+// } = require('./../authAPI');
 
 exports.create = (req, res, next) => {
-	console.log(req.body);
-	res.json(req.body);
+    res.json({'hi': '123'});
     // Model.find({}).exec()
     //     .then((docs) => {
     //         docs.forEach(function(hotel, index) {
@@ -15,7 +17,7 @@ exports.create = (req, res, next) => {
     //                 });
     //                 resp.on('end', () => {
     //                     try {
-    //                     	JSON.parse(data).Response.View.length;
+    //                      JSON.parse(data).Response.View.length;
     //                         const coordinates = JSON.parse(data).Response.View[0].Result[0].Location.NavigationPosition[0];
     //                         console.log(coordinates);
     //                         Model.updateMany({ADDRESS: hotel.ADDRESS}, { Latitude: coordinates.Latitude, Longitude: coordinates.Longitude }, (err) => {});
@@ -24,6 +26,8 @@ exports.create = (req, res, next) => {
     //             })
     //         });
     //     })
+
+
 };
 
 
@@ -63,7 +67,7 @@ exports.read = (req, res, next) => {
     dataToSearch.TYPE = params.TYPE;
     dataToSearch.Rooms = params.Rooms;
     dataToSearch.Size = params.Size;
-    dataToSearch.Latitude  = params.Latitude;
+    dataToSearch.Latitude = params.Latitude;
     dataToSearch.Longitude = params.Longitude;
     for (key in dataToSearch) {
         if (dataToSearch[key] === null || dataToSearch[key] === undefined || dataToSearch[key] === '') {

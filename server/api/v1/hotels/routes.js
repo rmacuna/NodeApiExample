@@ -1,6 +1,13 @@
 const router = require('express').Router();
 const logger = require('winston');
 const controller = require('./controller');
+
+const {
+  auth,
+  authFailed,
+} = require('./../authAPI');
+
+
 /*
  * /api/hotels/     POST   - CREATE
  * /api/hotels/     GET    - READ ALL
@@ -10,7 +17,7 @@ const controller = require('./controller');
  */
 
 router.route('/')
-    .post(controller.create)
+    .post(auth, controller.create)
     .get(controller.all)
 
 router.route('/find')

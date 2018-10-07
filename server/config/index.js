@@ -11,6 +11,9 @@ const config = {
     hostname: process.env.SERVER_HOSTNAME,
     port: process.env.SERVER_PORT
   },
+  jwt: {
+    secret: process.env.JWTSECRET,
+  },
   database: {
   	url: process.env.DB_REF
   }

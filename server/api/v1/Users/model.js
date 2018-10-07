@@ -42,8 +42,15 @@ const user = new Schema(fields, {
   timestamps: true,
 });
 
-user.methods.generateHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+user.pre('save', function Save(next) {
+  if (this.isNew || this.isModified('password')) {
+     this.password = bcrypt.hashSync(this.password);
+  }
+  next();
+})
+
+user.methods.verifyPassword = function verifyPassword(password) {
+  return bcrypt.compareSync(password, this.password);
 };
 
 

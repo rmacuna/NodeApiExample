@@ -10,8 +10,11 @@ const controller = require('./controller');
  */
 
 router.route('/')
-    .post(controller.create)
+    .post(controller.create )
     .get(controller.all)
+
+router.route('/signup')
+	.post(controller.signup)
 
 router.route('/find')
     .get(controller.read);

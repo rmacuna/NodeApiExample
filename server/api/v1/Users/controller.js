@@ -1,42 +1,56 @@
 const https = require('https');
 const Model = require('./model');
+const {
+    signToken,
+} = require('./../authAPI');
 
 exports.create = (req, res, next) => {
     const { body } = req
-    const name = body.name;
-    const last = body.lastname;
-    const email = body.email;
-    const userId = generateUniqueId(last, email);
-    body['userId'] = userId;
-    const user = new Model();
-    body.password = user.generateHash(body.password);
+    body['userId'] = generateUniqueId(body.lastname, body.email);
     const document = new Model(body)
     document.save()
         .then((doc) => {
             res.json({
-                'name': name,
-                'userId': userId
+                'userId': doc.id,
+                'username': body['userId']
             });
         })
         .catch((err) => {
             next(new Error(err));
         })
 
-    function generateUniqueId(name, email) {
+    function generateUniqueId(last, email) {
         let str1 = email.split('@')[0];
         let str2 = last.charAt(0);
         const username = str2 + str1;
-        // const exist = true;
-        // while (exist) {
-        //     Model.find({ userId: username }).limit(1).exec()
-        //         .then((docs) => {
-        //             if (docs.length === 0 || docs === typeof undefined || docs === null) {
-        //                 exist = false;
-        //             }
-        //         })
-        // }
         return username;
     }
+};
+
+
+exports.signup = (req, res, next) => {
+    const {
+        body,
+    } = req;
+    if (body.contact_name !== undefined && body.company_name !== undefined && body.email !== undefined) {
+        const token = signToken({
+            contact_name: body.contact_name,
+            company_name: body.company_name,
+            email: body.email
+        });
+        res.json({
+            success: true,
+            meta: {
+                token
+            },
+        });
+    } else {
+        res.json({
+            success: false,
+            reason: "Missing parameters"
+        })
+    }
+
 };
 
 
@@ -58,7 +72,6 @@ exports.update = (req, res, next) => {
     const { body } = req;
     const userid = req.params.id;
 
-
     function deleteIfEmpty(dataToSearch) {
         for (key in dataToSearch) {
             if (dataToSearch[key] === null || dataToSearch[key] === undefined || dataToSearch[key] === '') {
@@ -77,7 +90,7 @@ exports.update = (req, res, next) => {
                 return false;
             }
         } else {
-            return false; 
+            return false;
         }
 
     }
