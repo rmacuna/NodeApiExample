@@ -5,21 +5,23 @@ const Model = require('./model');
 // } = require('./../authAPI');
 
 exports.create = (req, res, next) => {
-
+    
     const {body} = req;
-
     const hotel = new Model();
-
     const document = new Model(body)
     document.save()
         .then((doc) => {
             res.json({
-                doc
+                hotel: doc,
+                success: true
             });
         })
         .catch((err) => {
             next(new Error(err));
         })
+
+};
+
     // Model.find({}).exec()
     //     .then((docs) => {
     //         docs.forEach(function(hotel, index) {
@@ -40,9 +42,6 @@ exports.create = (req, res, next) => {
     //             })
     //         });
     //     })
-
-
-};
 
 
 exports.all = (req, res, next) => {

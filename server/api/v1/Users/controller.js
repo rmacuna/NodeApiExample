@@ -74,8 +74,6 @@ exports.signup = (req, res, next) => {
     }
 
 };
-
-
 exports.all = (req, res, next) => {
     Model.find().exec()
         .then((docs) => {
@@ -95,9 +93,6 @@ exports.read = (req, res, next) => {
 
 exports.update = (req, res, next) => {
     const { doc, body } = req;
-    console.log(doc);
-    Object.assign(doc, body);
-    console.log(doc);
     const user = new Model(doc);
     user.save()
         .then((updated) => {
