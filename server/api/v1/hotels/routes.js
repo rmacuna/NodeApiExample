@@ -16,6 +16,9 @@ const {
  * /api/hotels/:id  DELETE - DELETE
  */
 
+router
+	.param('id', controller.id);
+
 router.route('/')
     .post(auth, controller.create)
     .get(controller.all)

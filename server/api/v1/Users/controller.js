@@ -93,12 +93,12 @@ exports.read = (req, res, next) => {
 
 exports.update = (req, res, next) => {
     const { doc, body } = req;
-    const user = new Model(doc);
-    user.save()
+    Object.assign(doc, body);
+    doc.save()
         .then((updated) => {
             res.json({
                 success: 1,
-                item: updated,
+                updated
             });
         })
         .catch((err) => {
