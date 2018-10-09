@@ -5,7 +5,21 @@ const Model = require('./model');
 // } = require('./../authAPI');
 
 exports.create = (req, res, next) => {
-    res.json({'hi': '123'});
+
+    const {body} = req;
+
+    const hotel = new Model();
+
+    const document = new Model(body)
+    document.save()
+        .then((doc) => {
+            res.json({
+                doc
+            });
+        })
+        .catch((err) => {
+            next(new Error(err));
+        })
     // Model.find({}).exec()
     //     .then((docs) => {
     //         docs.forEach(function(hotel, index) {
@@ -42,39 +56,8 @@ exports.all = (req, res, next) => {
 };
 
 exports.read = (req, res, next) => {
-    const dataToSearch = {
-        'HOTEL NAME': '',
-        ADDRESS: '',
-        STATE: '',
-        PHONE: '',
-        FAX: '',
-        'EMAIL ID': '',
-        WEBSITE: '',
-        TYPE: '',
-        Rooms: '',
-        Size: '',
-        Latitude: '',
-        Longitude: '',
-    };
     const params = req.query;
-    dataToSearch['HOTEL NAME'] = params.HOTEL_NAME;
-    dataToSearch.ADDRESS = params.ADDRESS;
-    dataToSearch.STATE = params.STATE;
-    dataToSearch.PHONE = params.PHONE;
-    dataToSearch.FAX = params.FAX;
-    dataToSearch['EMAIL ID'] = params.EMAIL_ID;
-    dataToSearch.WEBSITE = params.WEBSITE;
-    dataToSearch.TYPE = params.TYPE;
-    dataToSearch.Rooms = params.Rooms;
-    dataToSearch.Size = params.Size;
-    dataToSearch.Latitude = params.Latitude;
-    dataToSearch.Longitude = params.Longitude;
-    for (key in dataToSearch) {
-        if (dataToSearch[key] === null || dataToSearch[key] === undefined || dataToSearch[key] === '') {
-            delete dataToSearch[key];
-        }
-    }
-    Model.find(dataToSearch).exec()
+    Model.find(params).exec()
         .then((data) => {
             res.json({ data });
         })
@@ -84,6 +67,15 @@ exports.read = (req, res, next) => {
 };
 
 exports.update = (req, res, next) => {
+    const {body} = req.body;
+    Model.updateOne({ _id: req.params.id }, body)
+        .then((data) => {
+            
+        })
+        .catch((err) => {
+            next(new Error(err));
+        })
+
     res.json({});
 };
 

@@ -16,15 +16,34 @@ const { Schema } = mongoose;
 /* Creamos el objeto */
 const fields = {
   _id: { type: Schema.Types.ObjectId, auto: true },
-  HOTEL_NAME: String,
-  ADDRESS: String,
-  STATE: String,
+  'HOTEL NAME': {
+    type: String,
+    required: true
+  },
+  ADDRESS: {
+    type: String,
+    required: true
+  },
+  STATE: {
+    type: String,
+    required: true
+  },
   PHONE: String,
   FAX: String,
-  EMAIL_ID: String,
+  'EMAIL ID': {
+    type: String,
+    unique: true,
+    dropDups: true
+  },
   WEBSITE: String,
-  TYPE: String,
-  Rooms: Number,
+  TYPE: {
+    type: String,
+    required: true
+  },
+  Rooms: {
+    type: Number,
+    required: true,
+  },
   Size: String,
   Latitude: String,
   Longitude: String,
@@ -34,5 +53,13 @@ const fields = {
 const hotel = new Schema(fields, {
   timestamps: false,
 });
+
+hotel.pre('save', function Save(next) {
+  if (this.Rooms >= 10 && this.Rooms <= 50) {
+    this.Size = 'Small';
+  } else if (this.Rooms >= 51 && this.Rooms <= 100) {
+    this.Size = 'Medium';
+  }
+})
 
 module.exports = mongoose.model('Hoteles1', hotel, 'Hoteles1');

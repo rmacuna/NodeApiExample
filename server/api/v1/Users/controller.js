@@ -10,7 +10,10 @@ exports.create = (req, res, next) => {
     const document = new Model(body)
     document.save()
         .then((doc) => {
+            res.status(201);
             res.json({
+                success: true,
+                item: doc,
                 'userId': doc.id,
                 'username': body['userId']
             });
@@ -27,6 +30,25 @@ exports.create = (req, res, next) => {
     }
 };
 
+exports.id = (req, res, next, id) => {
+    Model.findById(id).exec()
+        .then((doc) => {
+            if (doc) {
+                req.doc = doc;
+                next();
+            } else {
+                const message = `${Model.modelName} not found`;
+                logger.info(message);
+                res.json({
+                    success: false,
+                    message,
+                });
+            }
+        })
+        .catch((err) => {
+            next(new Error(err));
+        });
+};
 
 exports.signup = (req, res, next) => {
     const {
@@ -57,7 +79,10 @@ exports.signup = (req, res, next) => {
 exports.all = (req, res, next) => {
     Model.find().exec()
         .then((docs) => {
-            res.json(docs);
+            res.json({
+                success: true,
+                items: docs,
+            });
         })
         .catch((err) => {
             next(new Error(err));
@@ -69,61 +94,21 @@ exports.read = (req, res, next) => {
 };
 
 exports.update = (req, res, next) => {
-    const { body } = req;
-    const userid = req.params.id;
-
-    function deleteIfEmpty(dataToSearch) {
-        for (key in dataToSearch) {
-            if (dataToSearch[key] === null || dataToSearch[key] === undefined || dataToSearch[key] === '') {
-                delete dataToSearch[key];
-            }
-        }
-        return dataToSearch;
-    }
-
-    function validatePass(password) {
-        if (password !== undefined && password !== null) {
-            const trimmed = password.trim().length;
-            if (trimmed > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-
-    }
-    /* 
-        Una vez verificamos si los parametros enviados fueron llenados verificamos cuales 
-        se utilizaran para actualizar el documento. 
-    */
-    const user = new Model();
-    let fieldsToUpdate = {};
-    if (Object.keys(body).length > 0) {
-        fieldsToUpdate.email = body.email;
-        if (validatePass(body.password)) {
-            fieldsToUpdate.password = user.generateHash(body.password);
-        }
-        fieldsToUpdate.address = body.address;
-        fieldsToUpdate.name = body.name;
-        fieldsToUpdate.lastname = body.lastname;
-        fieldsToUpdate.userId = body.userId;
-        deleteIfEmpty(fieldsToUpdate);
-        Model.updateOne({ userId: userid }, fieldsToUpdate)
-            .then((data) => {
-                if (data.n === 0) {
-                    res.json({ message: 'User Not Found', responseType: '0' });
-                } else {
-                    res.json({ message: 'User Updated', responseType: '1' });
-                }
-            })
-            .catch((err) => {
-                res.json({ error: err, responseType: '0' });
-            })
-    } else {
-        res.json({ error: 'Fields are empty', responseType: '0' });
-    }
+    const { doc, body } = req;
+    console.log(doc);
+    Object.assign(doc, body);
+    console.log(doc);
+    const user = new Model(doc);
+    user.save()
+        .then((updated) => {
+            res.json({
+                success: 1,
+                item: updated,
+            });
+        })
+        .catch((err) => {
+            next(new Error(err));
+        });
 };
 
 exports.delete = (req, res, next) => {

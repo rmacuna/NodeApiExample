@@ -21,7 +21,7 @@ const auth = (req, res, next) => {
       }
     });
   } else {
-    const message = 'Forbidden';
+    const message = 'Forbidden Token';
     logger.warn(message);
     res.status(403);
     res.json({

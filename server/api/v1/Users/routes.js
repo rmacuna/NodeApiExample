@@ -13,6 +13,9 @@ router.route('/')
     .post(controller.create )
     .get(controller.all)
 
+router
+    .param('id', controller.id);
+
 router.route('/signup')
 	.post(controller.signup)
 

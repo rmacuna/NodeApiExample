@@ -24,8 +24,8 @@ router.route('/find')
     .get(controller.read)
 
 router.route('/:id')
-   .put(controller.update)
-   .delete(controller.delete);
+   .put(auth,controller.update)
+   .delete(auth,controller.delete);
  
 
 

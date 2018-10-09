@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-
+const logger = require('winston');
 const api = require('./api/v1');
 
 const app = express();
@@ -29,16 +29,14 @@ database.connect();
 
 
 app.use((req, res, next) => {
+  const message = 'Resource not found';
+
+  logger.info(message);
+
   res.status(404);
   res.json({
-    error: 'Route not found',
-  });
-});
-
-app.use((err, req, res, next) => {
-  res.status(500);
-  res.json({
-    error: `${err}`,
+    error: true,
+    message,
   });
 });
 
@@ -63,4 +61,5 @@ app.use((err, req, res, next) => {
     message,
   });
 });
+
 module.exports = app;
