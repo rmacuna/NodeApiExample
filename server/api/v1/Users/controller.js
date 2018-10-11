@@ -1,5 +1,6 @@
 const https = require('https');
 const Model = require('./model');
+const logger = require('winston');
 const {
     signToken,
 } = require('./../authAPI');
