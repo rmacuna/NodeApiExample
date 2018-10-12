@@ -5,6 +5,7 @@ const Model = require('./model');
 //     auth
 // } = require('./../authAPI');
 
+
 exports.create = (req, res, next) => {
 
     const { body } = req;
@@ -42,26 +43,27 @@ exports.id = (req, res, next, id) => {
         });
 };
 
-// Model.find({}).exec()
-//     .then((docs) => {
-//         docs.forEach(function(hotel, index) {
-//             const address = hotel.ADDRESS.replace(/["]+/g, '');
-//             https.get("https://geocoder.api.here.com/6.2/geocode.json?app_id=5SG40a8DgDDIML1neFDT&app_code=JQq-VvSFvrMhgETOWqK09A&searchtext=" + address, (resp) => {
-//                 let data = '';
-//                 resp.on('data', (chunk) => {
-//                     data += chunk;
-//                 });
-//                 resp.on('end', () => {
-//                     try {
-//                      JSON.parse(data).Response.View.length;
-//                         const coordinates = JSON.parse(data).Response.View[0].Result[0].Location.NavigationPosition[0];
-//                         console.log(coordinates);
-//                         Model.updateMany({ADDRESS: hotel.ADDRESS}, { Latitude: coordinates.Latitude, Longitude: coordinates.Longitude }, (err) => {});
-//                     } catch(e) {}
-//                 })
-//             })
-//         });
-//     })
+/* Model.find({}).exec()
+     .then((docs) => {
+         docs.forEach(function(hotel, index) {
+             const address = hotel.ADDRESS.replace(/["]+/g, '');
+             https.get("https://geocoder.api.here.com/6.2/geocode.json?app_id=5SG40a8DgDDIML1neFDT&app_code=JQq-VvSFvrMhgETOWqK09A&searchtext=" + address, (resp) => {
+                 let data = '';
+                 resp.on('data', (chunk) => {
+                     data += chunk;
+                 });
+                 resp.on('end', () => {
+                     try {
+                      JSON.parse(data).Response.View.length;
+                         const coordinates = JSON.parse(data).Response.View[0].Result[0].Location.NavigationPosition[0];
+                         console.log(coordinates);
+                         Model.updateMany({ADDRESS: hotel.ADDRESS}, { Latitude: coordinates.Latitude, Longitude: coordinates.Longitude }, (err) => {});
+                     } catch(e) {}
+                 })
+             })
+         });
+    })
+*/
 
 
 exports.all = (req, res, next) => {
@@ -75,14 +77,64 @@ exports.all = (req, res, next) => {
 };
 
 exports.read = (req, res, next) => {
+
+    function haversineDistance(params) {
+        function toRad(x) {
+            return x * Math.PI / 180;
+        }
+        var lon1 = params.long1;
+        var lat1 = params.lat1;
+
+        var lon2 = params.long2;
+        var lat2 = params.lat1;
+
+        var R = 6371; // km
+
+        var x1 = lat2 - lat1;
+        var dLat = toRad(x1);
+        var x2 = lon2 - lon1;
+        var dLon = toRad(x2)
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
+
+        return d;
+    }
     const params = req.query;
-    Model.find(params).exec()
-        .then((data) => {
-            res.json({ data });
-        })
-        .catch((err) => {
-            next(new Error(err));
-        });
+    if (params.Range) {
+        const near = [];
+        Model.find({})
+            .then((docs) => {
+                docs.forEach(function(hotel, index) {
+                    const coordinates = {
+                        'lat1': params.Latitude,
+                        'long1': params.Longitude,
+                        'lat2': hotel.Latitude,
+                        'long2': hotel.Longitude
+                    };
+                    const d = haversineDistance(coordinates);
+                    if (d <= params.Range) {
+                        near.push(hotel);
+                    }
+                });
+                res.json(near);
+            })
+            .catch((err) => {
+                next(new Error(err));
+            });
+
+    } else {
+        Model.find(params).exec()
+            .then((data) => {
+                res.json({ data });
+            })
+            .catch((err) => {
+                next(new Error(err));
+            });
+    }
+
 };
 
 exports.update = (req, res, next) => {
