@@ -31,10 +31,7 @@ const fields = {
         type: String,
         unique: true,
         dropDups: true,
-    },
-    roomsReserved: {
-        type: Object
-    },
+    }
 };
 
 
@@ -44,17 +41,13 @@ const user = new Schema(fields, {
 
 user.pre('save', function Save(next) {
     if (this.isNew || this.isModified('password')) {
-        if (!bcrypt.compareSync('password', this.password)) {
         this.password = bcrypt.hashSync(this.password);
-          
-        }
     }
     next();
 });
 
 user.methods.verifyPassword = function verifyPassword(password) {
-    return bcrypt.compareSync(password, this.password);
+  return bcrypt.compareSync(password, this.password);
 };
-
 
 module.exports = mongoose.model('Users', user, 'Users');

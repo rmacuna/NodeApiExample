@@ -1,4 +1,5 @@
 const Model = require('../reservaciones/model');
+const Hotel = require('../hotels/model');
 const logger = require('winston');
 
 exports.id = (req, res, next, id) => {
@@ -22,18 +23,66 @@ exports.id = (req, res, next, id) => {
 };
 
 exports.create = (req, res, next) => {
-    const document = new Model(req.body);
-    document.save()
-        .then((doc) => {
-            res.json({
-                success: true,
-                Message: 'Reservation created',
-                reservationId: doc._id
-            });
-        })
-        .catch((err) => {
-            next(new Error(err));
-        })
+    const booking = req.body;
+    console.log(booking);
+    Model.aggregate([ 
+        {
+        $match: {
+            $and: [{
+                idHotel: booking.idHotel,
+            },
+                {
+                startDate: {
+                    $lte: booking.endDate,
+                },
+            }, {
+                endDate: {
+                    $gte: booking.startDate,
+                },
+            }] },
+        }, {
+        $group: {
+            _id: null,
+            total: {
+                $sum: "$RoomsReserved"
+            }
+        }
+    }])
+    .then(function(result) {
+        const booked = result;
+        console.log(booked);
+        let availables;
+        Hotel.findById(booking.idHotel)
+            .then((hotel) => {
+                console.log(hotel);
+                if (booked.length !== 0) {
+                    console.log(booked[0]);
+                    availables = hotel.Rooms - booked[0].total;
+                } else {
+                    availables = hotel.Rooms;
+                }
+                console.log(availables);
+                if(availables >= booking.RoomsReserved) {
+                    const document = new Model(req.body);
+                    document.save()
+                        .then((saved) => {
+                            res.json({
+                                success: true,
+                                message: 'Rooms Reserved',
+                                reservationID: saved._id
+                            });
+                        })
+                        .catch((err) => {
+                            next(new Error(err));
+                        })
+                } else {
+                    res.json({
+                        success: false,
+                        message: 'Cannot reservate because there are no more rooms availables'
+                    });
+                }
+            })
+    })
 };
 
 exports.all = (req, res, next) => {

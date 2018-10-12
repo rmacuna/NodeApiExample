@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const https = require('https');
 const logger = require('winston');
 const hotel = require('../hotels/model');
+const Room = require('../Rooms/model');
 const { Schema } = mongoose;
 
 
@@ -18,40 +19,26 @@ const fields = {
 		type: String,
 		required: true
 	},
-	'Start Date': {
-		type: Date,
+	startDate: {
+		type: String,
 		required: true
 	},
 	State: {
 		type: String,
 		required: true
 	},
-	'End Date': {
-		type: Date,
+	endDate: {
+		type: String,
 		required: true
 	},
 	RoomsReserved: {
 		type: Number,
-		required: true
-	},
-	RoomsAvailable: {
-		type: Number
+		required: true,
+		min: [1, 'You need to book at least 1 room']
 	}
 }
 
 const reservation = new Schema(fields, {
 	timestamps: true
 });
-
-reservation.pre('save', function Save (next) {
-	hotel.find({_id: this.idHotel })
-		.then((hotel) => {
-			const max_capacity = hotel.Rooms;
-			
-		})
-		.catch((err) => {
-
-		})
-})
-
 module.exports = mongoose.model('Reservation', reservation, 'Reservations');

@@ -4,18 +4,24 @@ const { Schema } = mongoose;
 
 
 const fields = {
-	idHotel: {
-		type: String,
-		required: true
-	},
-	RoomsAvailable: {
-		type: Number,
-		required: true
-	}
-}
+    idHotel: {
+        type: String,
+    },
+    capacity: {
+        type: Number
+    },
+    roomsAvailable: {
+        type: String
+    }
+};
+
 
 const Room = new Schema(fields, {
-	timestamps: true
+    timestamps: true,
 });
 
-module.exports = mongoose.model('Rooms', reservation, 'Rooms');
+Room.pre('save', function Save(next) {
+    next();
+});
+
+module.exports = mongoose.model('Room', Room, 'Rooms');

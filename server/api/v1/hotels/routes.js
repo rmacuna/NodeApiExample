@@ -26,8 +26,11 @@ router.route('/')
 router.route('/find')
     .get(controller.read)
 
+
+router.route('/update/:id')
+	.put(auth, controller.update)
+	
 router.route('/delete/:id')
-   .put(auth,controller.update)
    .delete(auth,controller.delete);
  
 

@@ -1,6 +1,7 @@
 const https = require('https');
 const logger = require('winston');
 const Model = require('./model');
+const Room = require('../Rooms/model');
 // const {
 //     auth
 // } = require('./../authAPI');
@@ -86,7 +87,7 @@ exports.read = (req, res, next) => {
         var lat1 = params.lat1;
 
         var lon2 = params.long2;
-        var lat2 = params.lat1;
+        var lat2 = params.lat2;
 
         var R = 6371; // km
 
@@ -102,9 +103,10 @@ exports.read = (req, res, next) => {
 
         return d;
     }
+
     const params = req.query;
     if (params.Range) {
-        const near = [];
+        let near = [];
         Model.find({})
             .then((docs) => {
                 docs.forEach(function(hotel, index) {
@@ -115,7 +117,9 @@ exports.read = (req, res, next) => {
                         'long2': hotel.Longitude
                     };
                     const d = haversineDistance(coordinates);
+                    console.log(d);
                     if (d <= params.Range) {
+
                         near.push(hotel);
                     }
                 });
@@ -124,7 +128,6 @@ exports.read = (req, res, next) => {
             .catch((err) => {
                 next(new Error(err));
             });
-
     } else {
         Model.find(params).exec()
             .then((data) => {
@@ -140,6 +143,7 @@ exports.read = (req, res, next) => {
 exports.update = (req, res, next) => {
     const { doc, body } = req;
     Object.assign(doc, body);
+    console.log(doc);
     doc.save()
         .then((updated) => {
             res.json({
