@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const https = require('https');
 const logger = require('winston');
 const hotel = require('../hotels/model');
-const Room = require('../Rooms/model');
 const { Schema } = mongoose;
 
 

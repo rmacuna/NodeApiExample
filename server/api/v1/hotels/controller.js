@@ -1,7 +1,6 @@
 const https = require('https');
 const logger = require('winston');
 const Model = require('./model');
-const Room = require('../Rooms/model');
 // const {
 //     auth
 // } = require('./../authAPI');
