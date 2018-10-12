@@ -25,6 +25,10 @@ router.route('/')
 
 router.route('/find')
     .get(controller.read)
+    
+router.route('/check')
+	.get(controller.checkAvailable)
+
 
 
 router.route('/update/:id')
