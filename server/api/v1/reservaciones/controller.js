@@ -50,7 +50,6 @@ exports.create = (req, res, next) => {
     }])
     .then(function(result) {
         const booked = result;
-        console.log(booked);
         let availables;
         Hotel.findById(booking.idHotel)
             .then((hotel) => {

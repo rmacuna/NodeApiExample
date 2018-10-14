@@ -7,7 +7,6 @@ const {
 
 exports.create = (req, res, next) => {
     const { body } = req
-    body['userId'] = generateUniqueId(body.lastname, body.email);
     const document = new Model(body)
     document.save()
         .then((doc) => {
@@ -15,20 +14,12 @@ exports.create = (req, res, next) => {
             res.json({
                 success: true,
                 item: doc,
-                'userId': doc.id,
-                'username': body['userId']
+                'userId': doc.id
             });
         })
         .catch((err) => {
             next(new Error(err));
         })
-
-    function generateUniqueId(last, email) {
-        let str1 = email.split('@')[0];
-        let str2 = last.charAt(0);
-        const username = str2 + str1;
-        return username;
-    }
 };
 
 exports.id = (req, res, next, id) => {

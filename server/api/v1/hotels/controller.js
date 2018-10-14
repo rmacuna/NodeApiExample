@@ -1,10 +1,10 @@
 const https = require('https');
 const logger = require('winston');
 const Model = require('./model');
+const Reservation = require('../reservaciones/model');
 
 
 
-var Reservation = require('../reservaciones/model');
 
 exports.create = (req, res, next) => {
     const { body } = req;
@@ -22,6 +22,30 @@ exports.create = (req, res, next) => {
         })
 
 };
+
+
+exports.findAllLatitudes = (req,res,next) =>{
+    Model.find({}).exec()
+         .then((docs) => {
+             docs.forEach(function(hotel, index) {
+                 const address = hotel.ADDRESS.replace(/["]+/g, '');
+                 https.get("https://geocoder.api.here.com/6.2/geocode.json?app_id=5SG40a8DgDDIML1neFDT&app_code=JQq-VvSFvrMhgETOWqK09A&searchtext=" + address, (resp) => {
+                     let data = '';
+                     resp.on('data', (chunk) => {
+                         data += chunk;
+                     });
+                     resp.on('end', () => {
+                         try {
+                            JSON.parse(data).Response.View.length;
+                             const coordinates = JSON.parse(data).Response.View[0].Result[0].Location.NavigationPosition[0];
+                             Model.updateMany({ADDRESS: hotel.ADDRESS}, { Latitude: coordinates.Latitude, Longitude: coordinates.Longitude }, (err) => {});
+                             } catch(e) {}
+                     })
+                 })
+             });
+        })
+}
+
 exports.id = (req, res, next, id) => {
     Model.findById(id).exec()
         .then((doc) => {
@@ -139,72 +163,33 @@ exports.read = (req, res, next) => {
 };
 
 exports.checkAvailable = (req, res, next) => {
-    var query = req.query;
-    Model.aggregate([{
-                $lookup: {
-                    from: "Reservations",
-                    localField: "_id",
-                    foreignField: "idHotel",
-                    as: "reservation"
-                }
-            },
-            { $unwind: { path: "$reservation" } },
-            { $project: { "reservation": 1, "State": 1, "_id": 1, "Rooms": 1, "startDate": 1, "endDate": 1 } },
-            {
-                $match: {
-                    $or: [{
-                            $and: [{
-                                    "State": query.state
-                                },
-                                {
-                                    "reservation.startDate": {
-                                        $lte: query.endDate,
-                                    },
-                                }, {
-                                    "reservation.endDate": {
-                                        $gte: query.startDate,
-                                    },
-                                }
-                            ]
-                        },
-                        {
-                            $and: [{
-                                    "reservation": { "$exists": false }
-                                },
-                                { "State": query.state }
-                            ]
-                        }
-                    ]
-                }
-            }, {
-                $group: {
-                    _id: { hotelID: "$_id", totalRooms: "$Rooms", state: "$State", startDate: query.startDate, endDate: query.endDate },
-                    availableRooms: { $sum: "$reservation.RoomsAvailable" }
-
-                }
-            },
-            { $sort: { availableRooms: -1 } }
-        ])
-        .then(function(result) {
-            console.log(result)
-            result.forEach((hotel, index) => {
-                Hotel.find()
-                    .then(function(hotel) {
-                        if (hotel._id !== result._id.hotelID) {
-                            const newHotel = { _id: hotel._id }
-                            result.push(newHotel);
+   
+   const params = req.query;
+   let count;
+   let HotelsAvailable = [];
+   let ids = [];
+   Model.find({STATE: params.STATE})
+    .then((matchedHotels) => {
+        HotelsAvailable = matchedHotels;
+        matchedHotels.forEach(function (hotel,index) {
+            Reservation.find()
+                .then((reserv) => {
+                    reserv.forEach( function(booking, index) {
+                        if (booking.startDate <= params.endDate) {
+                            if (booking.endDate >= params.startDate) {
+                                ids.push(booking.idHotel);
+                            }
                         }
                     });
-                const availables = hotel._id.totalRooms - hotel.availableRooms;
-                hotel.availableRooms = availables;
-                if (availables <= 0) {
-                    result.splice(index, 1);
-                }
-            });
-            res.json({ length: result.length, results: result });
+                    HotelsAvailable.filter((hotel,index) => hotel._id !== ids[index]);
+                })
+        })
+        res.json(HotelsAvailable);
 
-        });
-
+    })
+    .catch((err) => {
+        next(new Error(err));
+    })
 }
 
 
@@ -212,7 +197,6 @@ exports.checkAvailable = (req, res, next) => {
 exports.update = (req, res, next) => {
     const { doc, body } = req;
     Object.assign(doc, body);
-    console.log(doc);
     doc.save()
         .then((updated) => {
             res.json({

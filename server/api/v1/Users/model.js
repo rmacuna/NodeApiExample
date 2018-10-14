@@ -26,11 +26,6 @@ const fields = {
     address: {
         type: String,
         required: true
-    },
-    userId: {
-        type: String,
-        unique: true,
-        dropDups: true,
     }
 };
 

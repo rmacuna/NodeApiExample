@@ -19,6 +19,10 @@ const {
 router
 	.param('id', controller.id);
 
+
+router.route('/hotels/coordinates/findLatLong')
+  .get(controller.findAllLatitudes)
+
 router.route('/')
     .post(auth, controller.create)
     .get(controller.all)
