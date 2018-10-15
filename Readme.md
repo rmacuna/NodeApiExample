@@ -51,9 +51,9 @@ Este proyecto corre utiliza los siguientes packetes
 Importar el archivo variables de entorno en el postman 
 
 
-## URL DE LA DOCUMENTACION 
+## URL DE LA DOCUMENTACIÓN 
 
-[Documentacion ](https://documenter.getpostman.com/view/5284145/RWgozJwp) del código con todas las rutas.
+[Documentación](https://documenter.getpostman.com/view/5284145/RWgozJwp) del código con todas las rutas.
 
 
 

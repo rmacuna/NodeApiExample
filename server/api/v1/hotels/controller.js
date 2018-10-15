@@ -24,25 +24,25 @@ exports.create = (req, res, next) => {
 };
 
 
-exports.findAllLatitudes = (req,res,next) =>{
+exports.findAllLatitudes = (req, res, next) => {
     Model.find({}).exec()
-         .then((docs) => {
-             docs.forEach(function(hotel, index) {
-                 const address = hotel.ADDRESS.replace(/["]+/g, '');
-                 https.get("https://geocoder.api.here.com/6.2/geocode.json?app_id=5SG40a8DgDDIML1neFDT&app_code=JQq-VvSFvrMhgETOWqK09A&searchtext=" + address, (resp) => {
-                     let data = '';
-                     resp.on('data', (chunk) => {
-                         data += chunk;
-                     });
-                     resp.on('end', () => {
-                         try {
+        .then((docs) => {
+            docs.forEach(function(hotel, index) {
+                const address = hotel.ADDRESS.replace(/["]+/g, '');
+                https.get("https://geocoder.api.here.com/6.2/geocode.json?app_id=5SG40a8DgDDIML1neFDT&app_code=JQq-VvSFvrMhgETOWqK09A&searchtext=" + address, (resp) => {
+                    let data = '';
+                    resp.on('data', (chunk) => {
+                        data += chunk;
+                    });
+                    resp.on('end', () => {
+                        try {
                             JSON.parse(data).Response.View.length;
-                             const coordinates = JSON.parse(data).Response.View[0].Result[0].Location.NavigationPosition[0];
-                             Model.updateMany({ADDRESS: hotel.ADDRESS}, { Latitude: coordinates.Latitude, Longitude: coordinates.Longitude }, (err) => {});
-                             } catch(e) {}
-                     })
-                 })
-             });
+                            const coordinates = JSON.parse(data).Response.View[0].Result[0].Location.NavigationPosition[0];
+                            Model.updateMany({ ADDRESS: hotel.ADDRESS }, { Latitude: coordinates.Latitude, Longitude: coordinates.Longitude }, (err) => {});
+                        } catch (e) {}
+                    })
+                })
+            });
         })
 }
 
@@ -163,33 +163,49 @@ exports.read = (req, res, next) => {
 };
 
 exports.checkAvailable = (req, res, next) => {
-   
-   const params = req.query;
-   let count;
-   let HotelsAvailable = [];
-   let ids = [];
-   Model.find({STATE: params.STATE})
-    .then((matchedHotels) => {
-        HotelsAvailable = matchedHotels;
-        matchedHotels.forEach(function (hotel,index) {
-            Reservation.find()
-                .then((reserv) => {
-                    reserv.forEach( function(booking, index) {
-                        if (booking.startDate <= params.endDate) {
-                            if (booking.endDate >= params.startDate) {
-                                ids.push(booking.idHotel);
+    const params = req.query;
+    let dif;
+    let c = 0;
+    let availableHotels = [];
+    Reservation.find({})
+        .then((reservation) => {
+            console.log(reservation);
+            reservation.forEach(function(reserv, index) {
+                confirm(reserv);
+            })
+        })
+        .catch((err) => {
+            next(new Error(err));
+        })
+
+    function confirm(reservation) {
+        Model.find({})
+            .then((hotel) => {
+                hotel.forEach(function(hotel, index) {
+                    if (hotel._id.toString() === reservation.idHotel) {
+                        dif = hotel.Rooms - reservation.RoomsReserved
+                        if (reservation.endDate <= params.startDate && reservation.startDate >= params.endDate) {
+                            if (params.State === hotel.STATE && dif > 0) {
+                                availableHotels.push(hotel);
+                                c++;
                             }
                         }
-                    });
-                    HotelsAvailable.filter((hotel,index) => hotel._id !== ids[index]);
+                    } else {
+                        if (params.State === hotel.STATE) {
+                            availableHotels.push(hotel);
+                            c++;
+                        }
+                    }
                 })
-        })
-        res.json(HotelsAvailable);
+                res.json(availableHotels)
 
-    })
-    .catch((err) => {
-        next(new Error(err));
-    })
+            })
+
+            .catch((err) => {
+                next(new Error(err));
+            })
+
+    }
 }
 
 
